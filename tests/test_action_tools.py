@@ -149,7 +149,7 @@ class TestPoolAutoscale:
         route = respx.post(f"{BASE}/api/worker/pool/autoscale/worker1").mock(
             return_value=httpx.Response(200, json={"message": "ok"})
         )
-        await pool_autoscale("worker1", min=2, max=10)
+        await pool_autoscale("worker1", min_processes=2, max_processes=10)
         body = json.loads(route.calls[0].request.content)
         assert body["min"] == 2
         assert body["max"] == 10

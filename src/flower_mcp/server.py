@@ -231,19 +231,19 @@ async def pool_restart(worker_name: str) -> str:
 
 
 @mcp.tool()
-async def pool_autoscale(worker_name: str, min: int, max: int) -> str:
+async def pool_autoscale(worker_name: str, min_processes: int, max_processes: int) -> str:
     """Configure autoscaling for the worker's execution pool.
 
     Args:
         worker_name: The worker hostname.
-        min: Minimum number of pool processes.
-        max: Maximum number of pool processes.
+        min_processes: Minimum number of pool processes.
+        max_processes: Maximum number of pool processes.
     """
     return _format(
         await flower_request(
             "POST",
             f"/api/worker/pool/autoscale/{worker_name}",
-            json={"min": min, "max": max},
+            json={"min": min_processes, "max": max_processes},
         )
     )
 

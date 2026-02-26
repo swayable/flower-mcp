@@ -20,6 +20,16 @@ class TestGetClient:
         client = get_client()
         assert client.auth is not None
 
+    def test_malformed_auth_warns(self, monkeypatch, caplog):
+        monkeypatch.setenv("FLOWER_AUTH", "admin")
+        reset_client()
+        import logging
+
+        with caplog.at_level(logging.WARNING, logger="flower_mcp.client"):
+            client = get_client()
+        assert client.auth is None
+        assert "missing ':' separator" in caplog.text
+
     def test_no_auth_by_default(self):
         client = get_client()
         assert client.auth is None

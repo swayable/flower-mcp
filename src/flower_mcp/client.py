@@ -1,6 +1,9 @@
+import logging
 import os
 
 import httpx
+
+logger = logging.getLogger(__name__)
 
 _client: httpx.AsyncClient | None = None
 
@@ -11,9 +14,15 @@ def get_client() -> httpx.AsyncClient:
         base_url = os.environ.get("FLOWER_URL", "http://localhost:5555")
         auth = None
         auth_str = os.environ.get("FLOWER_AUTH")
-        if auth_str and ":" in auth_str:
-            username, password = auth_str.split(":", 1)
-            auth = httpx.BasicAuth(username, password)
+        if auth_str:
+            if ":" not in auth_str:
+                logger.warning(
+                    "FLOWER_AUTH is set but missing ':' separator "
+                    "(expected 'user:password') — requests will be unauthenticated"
+                )
+            else:
+                username, password = auth_str.split(":", 1)
+                auth = httpx.BasicAuth(username, password)
         _client = httpx.AsyncClient(base_url=base_url, auth=auth, timeout=30.0)
     return _client
 

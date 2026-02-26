@@ -17,6 +17,9 @@ dependencies = [
 [project.scripts]
 flower-mcp = "flower_mcp.server:main"
 
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "respx"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
